@@ -62,6 +62,10 @@ LogSink::LogSink(uint32_t rollSize)
         fprintf(stderr, "Faild to open file:%s\n", file.c_str());
         exit(-1);
     }
+#ifdef MAX_FILES_LIMIT
+	maxFiles = 10;
+	filelist.push_back(file);
+#endif 
 }
 
 LogSink::~LogSink() {
@@ -92,6 +96,18 @@ void LogSink::rollFile() {
     }
 
     fileCount_++;
+#ifdef MAX_FILES_LIMIT
+	filelist.push_back(file);
+	
+	if (filelist.size() > maxFiles) {
+		const std::string& oldFile = filelist.front();
+		if(0 != remove(oldFile.c_str())) {
+			fprintf(stderr, "Faild to remove file:%s\n", oldFile.c_str());
+			// exit(-1);
+		}
+		filelist.pop_front();
+	}
+#endif 
 }
 
 size_t LogSink::sink(const char *data, size_t len) {

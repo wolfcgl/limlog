@@ -11,6 +11,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -19,6 +20,8 @@
 #include <stdint.h> // uint32_t
 #include <stdio.h>
 #include <string.h>
+
+// #define MAX_FILES_LIMIT
 
 namespace limlog {
 
@@ -36,7 +39,9 @@ class LogSink {
 
     void setLogFile(const char *file);
     void setRollSize(uint32_t size) { rollSize_ = size; }
-
+#ifdef MAX_FILES_LIMIT
+	void setMaxFiles(uint32_t num) { maxFiles = num; }
+#endif 
     void rollFile();
     size_t sink(const char *data, size_t len);
 
@@ -47,6 +52,10 @@ class LogSink {
     std::string fileName_;
     std::string date_;
     FILE *fp_;
+#ifdef MAX_FILES_LIMIT
+	uint32_t maxFiles;		// max number of files
+	std::list<std::string> filelist;
+#endif 
     static const uint32_t kBytesPerMb = 1 << 20;
     static constexpr const char *kDefaultLogFile = "./limlog";
 };

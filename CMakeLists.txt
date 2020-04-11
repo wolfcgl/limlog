@@ -13,6 +13,7 @@ else()
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__REL_FILE__='\"$(subst ${PROJECT_SOURCE_DIR}/,,$(abspath $<))\"'")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
 if (LIMLOG_CLANG)
 	set(CMAKE_CXX_COMPILER "clang++")
